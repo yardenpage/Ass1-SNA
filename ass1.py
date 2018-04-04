@@ -6,6 +6,7 @@ nodesDegreeKi = []
 neighborsOfNodes = []
 ValuesEi = []
 ValuesCi = []
+averageCofficence = 0
 
 #Loads a graph from a text file to the memory.
 #The text file is given as an edge list i.e, <source, destination> pairs of node ids.
@@ -32,8 +33,10 @@ def load_graph(path):
 #Save the results into an internal data structure for an easy access
 def calculate_clustering_coefficients():
     calculateKi()
+    findNeighbors()
     calculateEi()
     calculateCoefficients()
+    get_average_clustering_coefficient()
 
 
 def calculateKi():
@@ -51,10 +54,8 @@ def calculateKi():
     nodesDegreeKi = nodesDegreeKiT
     print nodesDegreeKi
 
-
-def calculateEi():
+def findNeighbors():
     neighborsOfNodesT = []
-    Ei = []
     for value in allValues:
         listN = []
         i = 0
@@ -63,12 +64,14 @@ def calculateEi():
                 listN.append(edgesTuples[i][1])
             elif edgesTuples[i][1] == value:
                 listN.append(edgesTuples[i][0])
-            i = i+1
+            i = i + 1
         neighborsOfNodesT.insert(value, (value, listN))
     print neighborsOfNodesT
     global neighborsOfNodes
     neighborsOfNodes = neighborsOfNodesT
 
+def calculateEi():
+    Ei = []
     index = 0
     for value in neighborsOfNodes:
         key = value[0]
@@ -109,11 +112,20 @@ def calculateCoefficients():
             Ci = 0
         else:
             Ci= 2 * float(ValuesEi[i][1]) / (float(nodesDegreeKi[i][1]) * float((nodesDegreeKi[i][1] - 1)))
-        ValuesCiT.insert(i, Ci)
+        ValuesCiT.insert(i, (nodesDegreeKi[i][0], Ci))
         i = i + 1
     global ValuesCi
     ValuesCi = ValuesCiT
     print ValuesCi
 
+#Returns the average clustering coefficient of the graph
+def get_average_clustering_coefficient():
+    count = len(ValuesCi)
+    summary = sum(j for i,j in ValuesCi)
+    average= summary/ count
+    global averageCofficence
+    averageCofficence = average
+    print averageCofficence
+    
 if __name__ == "__main__":
     load_graph(sys.argv[1])
