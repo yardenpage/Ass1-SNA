@@ -1,11 +1,12 @@
 import sys, csv
 from collections import Counter
-edgesTuples = []
-allValues = []
-nodesDegreeKi = []
-neighborsOfNodes = []
-ValuesEi = []
-ValuesCi = []
+
+edgesTuples = [] #pairs of edeges of nodes
+allValues = [] #the nodes
+nodesDegreeKi = [] #pairs of node and the number of neighbors
+neighborsOfNodes = [] #pairs of node and all his neighbors
+ValuesEi = [] #pairs of node and his ei value
+ValuesCi = [] # pairs of node and his ci value
 averageCofficence = 0
 
 #Loads a graph from a text file to the memory.
@@ -40,16 +41,22 @@ def calculate_clustering_coefficients():
 
 
 def calculateKi():
+    #get all the first elements of all the pairs
     distinctVals1 = list(map(lambda line: int(line[0]), edgesTuples))
+    #get all the second elements of all the pairs
     distinctVals2 = list(map(lambda line: int(line[1]), edgesTuples))
+    #union the values together
     distinctVals1.extend(distinctVals2)
     #print(distinctVals1)
+    #find distinct values
     allValuesT = list(set(distinctVals1))
     #print allValuesT
     global allValues
     allValues = allValuesT
     global nodesDegreeKi
+    #count for each node how mush neighbors he has
     nodesDegreeKiT = Counter(distinctVals1)
+    #sort the values
     nodesDegreeKiT = sorted(nodesDegreeKiT.items())
     nodesDegreeKi = nodesDegreeKiT
     print nodesDegreeKi
@@ -60,6 +67,7 @@ def findNeighbors():
         listN = []
         i = 0
         while i < len(edgesTuples):
+            #case the first element is the wanted node- we will add the second element to his neighbors list
             if edgesTuples[i][0] == value:
                 listN.append(edgesTuples[i][1])
             elif edgesTuples[i][1] == value:
