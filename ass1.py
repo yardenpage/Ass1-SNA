@@ -126,6 +126,20 @@ def get_average_clustering_coefficient():
     global averageCofficence
     averageCofficence = average
     print averageCofficence
-    
+
+#Returns the clustering coefficient of a specific node
+#Returns -1 for non-existing Id
+def get_clustering_coefficient(node_id):
+    for value in  ValuesCi:
+        if value[0] == node_id :
+            return value[1]
+    return -1
+
+# Returns a list of the clustering coefficients for all the nodes in the graph
+# The list should include pairs of node id, clustering coefficient value of that node.
+# The list should be ordered according to the clustering coefficient values of high to low
+#get_all_clustering_coefficients()
+
 if __name__ == "__main__":
     load_graph(sys.argv[1])
+    print get_clustering_coefficient(3)
