@@ -70,9 +70,11 @@ def findNeighbors():
             #case the first element is the wanted node- we will add the second element to his neighbors list
             if edgesTuples[i][0] == value:
                 listN.append(edgesTuples[i][1])
+            # case the second element is the wanted node- we will add the first element to his neighbors list
             elif edgesTuples[i][1] == value:
                 listN.append(edgesTuples[i][0])
             i = i + 1
+        #add the list of a node and his neighbors to the total list
         neighborsOfNodesT.insert(value, (value, listN))
     print neighborsOfNodesT
     global neighborsOfNodes
@@ -87,19 +89,23 @@ def calculateEi():
         i=0
         j=1
         counter = 0
+        # loop over all the elements in the neighbors list
         while i < len(neighbors):
             while j < len(neighbors):
+                #check if two neighbors are neighbors of each other
                 if checkConnection(index + 1, neighbors[i], neighbors[j]):
                     counter = counter + 1
                 j = j + 1
             i = i + 1
             j = i + 1
+        #insert the number of ei of the node to the total list
         Ei.insert(index, (key, counter))
         index = index + 1
     print Ei
     global ValuesEi
     ValuesEi = Ei
 
+#check if two nodes are neighbors
 def checkConnection(index, x, y):
     while index < len(neighborsOfNodes):
         if neighborsOfNodes[index][0] == x:
@@ -112,6 +118,7 @@ def checkConnection(index, x, y):
         index = index + 1
     return 0
 
+#use the formula to calculate ci values
 def calculateCoefficients():
     i = 0
     ValuesCiT = []
