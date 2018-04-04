@@ -138,8 +138,11 @@ def get_clustering_coefficient(node_id):
 # Returns a list of the clustering coefficients for all the nodes in the graph
 # The list should include pairs of node id, clustering coefficient value of that node.
 # The list should be ordered according to the clustering coefficient values of high to low
-#get_all_clustering_coefficients()
+def get_all_clustering_coefficients():
+    ValuesCi.sort(key= lambda x: x[1])
+    return ValuesCi
 
 if __name__ == "__main__":
     load_graph(sys.argv[1])
-    print get_clustering_coefficient(3)
+    #print get_clustering_coefficient(3)
+    print get_all_clustering_coefficients()
