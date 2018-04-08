@@ -1,6 +1,6 @@
 import sys, csv
 from collections import Counter
-
+import operator
 edgesTuples = [] #pairs of edeges of nodes
 allValues = [] #the nodes
 nodesDegreeKi = [] #pairs of node and the number of neighbors
@@ -24,7 +24,8 @@ def load_graph(path):
                 # create for each pair a tuple
                 element = [ int(x) for x in tuple(line) ]
                 edgesTuples.append(element)
-        #print edgesTuples
+        print edgesTuples
+        print len(edgesTuples)
         calculate_clustering_coefficients()
     except IOError:
         print "The file " + file + " doesn't exist"
@@ -50,9 +51,10 @@ def calculateKi():
     #print(distinctVals1)
     #find distinct values
     allValuesT = list(set(distinctVals1))
-    #print allValuesT
+    print allValuesT
     global allValues
     allValues = allValuesT
+    print len(allValues)
     global nodesDegreeKi
     #count for each node how mush neighbors he has
     nodesDegreeKiT = Counter(distinctVals1)
@@ -121,13 +123,13 @@ def checkConnection(index, x, y):
 #use the formula to calculate ci values
 def calculateCoefficients():
     i = 0
-    ValuesCiT = []
+    ValuesCiT = {}
     for value in allValues:
         if (nodesDegreeKi[i][1] < 2):
             Ci = 0
         else:
             Ci= 2 * float(ValuesEi[i][1]) / (float(nodesDegreeKi[i][1]) * float((nodesDegreeKi[i][1] - 1)))
-        ValuesCiT.insert(i, (nodesDegreeKi[i][0], Ci))
+        ValuesCiT[nodesDegreeKi[i][0]]= Ci
         i = i + 1
     global ValuesCi
     ValuesCi = ValuesCiT
@@ -136,7 +138,7 @@ def calculateCoefficients():
 #Returns the average clustering coefficient of the graph
 def get_average_clustering_coefficient():
     count = len(ValuesCi)
-    summary = sum(j for i,j in ValuesCi)
+    summary = sum(ValuesCi.values())
     average= summary/ count
     global averageCofficence
     averageCofficence = average
@@ -145,17 +147,16 @@ def get_average_clustering_coefficient():
 #Returns the clustering coefficient of a specific node
 #Returns -1 for non-existing Id
 def get_clustering_coefficient(node_id):
-    for value in  ValuesCi:
-        if value[0] == node_id :
-            return value[1]
+    if node_id in ValuesCi:
+        return ValuesCi[node_id]
     return -1
 
 # Returns a list of the clustering coefficients for all the nodes in the graph
 # The list should include pairs of node id, clustering coefficient value of that node.
 # The list should be ordered according to the clustering coefficient values of high to low
 def get_all_clustering_coefficients():
-    ValuesCi.sort(key= lambda x: x[1])
-    return ValuesCi
+    sortedList = sorted(ValuesCi.items(), key=operator.itemgetter(1), reverse= True)
+    return sortedList
 
 if __name__ == "__main__":
     load_graph(sys.argv[1])
