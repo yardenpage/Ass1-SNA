@@ -24,7 +24,9 @@ def load_graph(path):
                 # create for each pair a tuple
                 element = [ int(x) for x in tuple(line) ]
                 edgesTuples.append(element)
+        print "Edges"
         print edgesTuples
+        print "Number Of Edges"
         print len(edgesTuples)
         calculate_clustering_coefficients()
     except IOError:
@@ -51,16 +53,18 @@ def calculateKi():
     #print(distinctVals1)
     #find distinct values
     allValuesT = list(set(distinctVals1))
-    print allValuesT
     global allValues
-    allValues = allValuesT
+    allValues = sorted(allValuesT)
+    print "Nodes"
+    print allValues
+    print "Number Of Nodes"
     print len(allValues)
     global nodesDegreeKi
     #count for each node how mush neighbors he has
     nodesDegreeKiT = Counter(distinctVals1)
     #sort the values
-    nodesDegreeKiT = sorted(nodesDegreeKiT.items())
-    nodesDegreeKi = nodesDegreeKiT
+    nodesDegreeKi = sorted(nodesDegreeKiT.items())
+    print "(Node, Number Of Neighbors(Ki))"
     print nodesDegreeKi
 
 def findNeighbors():
@@ -78,6 +82,7 @@ def findNeighbors():
             i = i + 1
         #add the list of a node and his neighbors to the total list
         neighborsOfNodesT.insert(value, (value, listN))
+    print "(Node, Neighbors)"
     print neighborsOfNodesT
     global neighborsOfNodes
     neighborsOfNodes = neighborsOfNodesT
@@ -95,7 +100,7 @@ def calculateEi():
         while i < len(neighbors):
             while j < len(neighbors):
                 #check if two neighbors are neighbors of each other
-                if checkConnection(index + 1, neighbors[i], neighbors[j]):
+                if checkConnection(neighbors[i], neighbors[j]):
                     counter = counter + 1
                 j = j + 1
             i = i + 1
@@ -103,12 +108,14 @@ def calculateEi():
         #insert the number of ei of the node to the total list
         Ei.insert(index, (key, counter))
         index = index + 1
-    print Ei
     global ValuesEi
-    ValuesEi = Ei
+    ValuesEi = sorted(Ei)
+    print "(Node, Number Of Connections Betweens Neighbors(Ei))"
+    print(ValuesEi)
 
 #check if two nodes are neighbors
-def checkConnection(index, x, y):
+def checkConnection(x, y):
+    index=0
     while index < len(neighborsOfNodes):
         if neighborsOfNodes[index][0] == x:
             i = 0
@@ -126,13 +133,16 @@ def calculateCoefficients():
     ValuesCiT = {}
     for value in allValues:
         if (nodesDegreeKi[i][1] < 2):
-            Ci = 0
+            Ci = 0.0
         else:
-            Ci= 2 * float(ValuesEi[i][1]) / (float(nodesDegreeKi[i][1]) * float((nodesDegreeKi[i][1] - 1)))
+            mechane = (float(nodesDegreeKi[i][1]) * float(nodesDegreeKi[i][1] - 1))
+            mone = 2 * float(ValuesEi[i][1])
+            Ci= mone / mechane
         ValuesCiT[nodesDegreeKi[i][0]]= Ci
         i = i + 1
     global ValuesCi
     ValuesCi = ValuesCiT
+    print "(Node: Coefficient (Ci))"
     print ValuesCi
 
 #Returns the average clustering coefficient of the graph
@@ -142,6 +152,7 @@ def get_average_clustering_coefficient():
     average= summary/ count
     global averageCofficence
     averageCofficence = average
+    print "Average Coefficient"
     print averageCofficence
 
 #Returns the clustering coefficient of a specific node
@@ -161,4 +172,5 @@ def get_all_clustering_coefficients():
 if __name__ == "__main__":
     load_graph(sys.argv[1])
     #print get_clustering_coefficient(3)
+    print "(Node: Coefficient (Ci))"
     print get_all_clustering_coefficients()
